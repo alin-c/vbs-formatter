@@ -6,8 +6,17 @@ const {
 	Range,
 } = require('vscode');
 
+const editorConfig = vscode.workspace.getConfiguration('editor');
+const insertSpaces = editorConfig.get('insertSpaces');
+const tabSize = editorConfig.get('tabSize');
+let indentCharValue;
+if (insertSpaces) {
+	indentCharValue = ' '.repeat(tabSize);
+} else {
+	indentCharValue = '\t';
+}
+
 const contributions = vscode.workspace.getConfiguration('vbaFormatter');
-const indentCharValue = '\t';
 const breakLineCharValue = '\n';
 const levelValue = contributions.get('level');
 const breakOnSeperatorValue = contributions.get('breakOnSeperator');
