@@ -1,93 +1,94 @@
 {
-  "name": "vba-formatter",
-  "displayName": "VBA Formatter",
-  "description": "Format Microsoft VBA and VBScript files.",
-  "publisher": "threatcon",
-  "version": "0.0.3",
-  "engines": {
-    "vscode": "^1.85.0"
-  },
-  "categories": [
-    "Other",
-    "Formatters"
-  ],
-  "icon": "images/icon.png",
-  "pricing": "Free",
-  "activationEvents": [
-    "onLanguage:vbs",
-    "onLanguage:vb",
-    "onLanguage:vba",
-    "onLanguage:VBScript"
-  ],
-  "main": "./extension.js",
-  "contributes": {
-    "configuration": {
-      "title": "VBA Formatter",
-      "properties": {
-        "vbaFormatter.level": {
-          "type": "number",
-          "default": 0,
-          "description": "Indent level to start off"
-        },
-        "vbaFormatter.breakOnSeperator": {
-          "type": "boolean",
-          "default": false,
-          "description": "Whether it breaks the line on occurrences of the \":\" statement separator."
-        },
-        "vbaFormatter.removeComments": {
-          "type": "boolean",
-          "default": false,
-          "description": "Whether it removes comments from the input."
-        }
-      }
+    "name": "vbs-formatter",
+    "displayName": "VBS Formatter",
+    "description": "Format VBScript and VBA files.",
+    "publisher": "alin-c",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.85.0"
     },
-    "commands": [
-      {
-        "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
-        "command": "extension.pretty",
-        "title": "VBA-Formatter"
-      }
+    "categories": [
+        "Other",
+        "Formatters"
     ],
-    "keybindings": [
-      {
-        "command": "extension.pretty",
-        "key": "ctrl+alt+b"
-      }
+    "icon": "images/icon.png",
+    "pricing": "Free",
+    "activationEvents": [
+        "onLanguage:vbs",
+        "onLanguage:vba",
+        "onLanguage:VBScript",
+        "onLanguage:vb"
     ],
-    "menus": {
-      "editor/context": [
-        {
-          "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
-          "command": "extension.pretty",
-          "group": "navigation"
+    "main": "./extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "VBS Formatter",
+            "properties": {
+                "vbsFormatter.level": {
+                    "type": "number",
+                    "default": 0,
+                    "description": "Indent level to start off"
+                },
+                "vbsFormatter.breakOnSeparator": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Break the line on occurrences of the ':' statement separator"
+                },
+                "vbsFormatter.removeComments": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Remove comments from the input"
+                }
+            }
+        },
+        "commands": [
+            {
+                "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
+                "command": "extension.pretty",
+                "title": "VBS Formatter"
+            }
+        ],
+        "keybindings": [
+            {
+                "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
+                "command": "extension.pretty",
+                "key": "shift+alt+f"
+            }
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
+                    "command": "extension.pretty",
+                    "group": "navigation"
+                }
+            ]
         }
-      ]
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "pretest": "npm run lint",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.85.0",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "18.x",
+        "eslint": "^8.54.0",
+        "typescript": "^5.3.2",
+        "@vscode/test-cli": "^0.0.4",
+        "@vscode/test-electron": "^2.3.8"
+    },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/alin-c/vbs-formatter.git"
+    },
+    "homepage": "https://github.com/alin-c/vbs-formatter",
+    "__metadata": {
+        "id": "alin-c",
+        "publisherDisplayName": "Alin Clincea",
+        "publisherId": "alin-c",
+        "isPreReleaseVersion": false
     }
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.85.0",
-    "@types/mocha": "^10.0.6",
-    "@types/node": "18.x",
-    "eslint": "^8.54.0",
-    "typescript": "^5.3.2",
-    "@vscode/test-cli": "^0.0.4",
-    "@vscode/test-electron": "^2.3.8"
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/threatcon/vba-formatter.git"
-  },
-  "homepage": "https://github.com/threatcon/vba-formatter",
-  "__metadata": {
-    "id": "threatcon",
-    "publisherDisplayName": "Antonio Turner",
-    "publisherId": "threatcon",
-    "isPreReleaseVersion": false
-  }
 }

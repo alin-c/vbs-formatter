@@ -1,15 +1,15 @@
-# VBS Formatter 
-This is a VS Code extension to indent VBS and VBA files in the active text editor.
+# VBS Formatter
+Formats VBS and VBA code.
 
 This is a fork of VBA Formatter by threatcon (Antonio Turner), which is a fork of VBSPretty by lenilsondc (Lenilson de Castro).
-You can check out the originals here: 
+You can check out the original code here:
 1. https://github.com/threatcon/vba-formatter
 2. https://www.npmjs.com/package/vbspretty
 
 This fork was primarily intended to allow using the indent character and size configured globally for VS Code.
 
 ## Features
-Formats VBS and VBA files.
+Formats VBS and VBA code. It uses global indentation settings (tab or space, indent size).
 
 ## Requirements
 VS Code v.1.85.0

@@ -1,9 +1,7 @@
 # Change Log
 
-All notable changes to the "vba-formatter" extension will be documented in this file.
+All notable changes will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [Released]
 
-## [Unreleased]
-
-- Initial release
+- Initial release: adapt to current editor configuration (indent type and size, line break type)

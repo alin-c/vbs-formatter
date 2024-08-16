@@ -23,7 +23,7 @@ var vbsbeautifier = function vbsbeautifier_(options) {
             bUseIndent = true,
             staticIndent = options.indentChar.repeat(options.level),
             dynamicIndent = '',
-            ignoreWSToken = function(tokenType) {
+            ignoreWSToken = function (tokenType) {
                 return [
                     'DOT_OPERATOR',
                     'EOF',
@@ -31,7 +31,7 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                     'INVALID'
                 ].indexOf(tokenType) !== -1;
             },
-            isOperator = function(tokenType) {
+            isOperator = function (tokenType) {
                 return [
                     'ARTHMETIC_OPERATOR',
                     'BINARY_OPERATOR',
@@ -39,17 +39,17 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                     'STEP'
                 ].indexOf(tokenType) !== -1;
             },
-            indent = function(level) {
-              if (!bUseIndent)
-                  return '';
+            indent = function (level) {
+                if (!bUseIndent)
+                    return '';
 
-              bUseIndent = false;
-              if (currentLevel + level < 0)
-                  return staticIndent + dynamicIndent;
+                bUseIndent = false;
+                if (currentLevel + level < 0)
+                    return staticIndent + dynamicIndent;
 
-              return staticIndent + dynamicIndent +  options.indentChar.repeat(currentLevel + level);
+                return staticIndent + dynamicIndent + options.indentChar.repeat(currentLevel + level);
             },
-            writeCode = function(code) {
+            writeCode = function (code) {
                 output += code;
             },
             writeToken = function vbsbeautifier_beautify_writeToken() {
@@ -62,7 +62,7 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                     curLineIndent = 0,
                     nextIndentDelta = 0,
                     nextLineIndent = 0,
-                    setTokenInpact = function(tokenType) {
+                    setTokenInpact = function (tokenType) {
                         var
                             indent = 0,
                             WSBefore = "",
@@ -70,110 +70,110 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                             lineIndent = 0;
 
                         switch (tokenType) {
-                          case 'ARTHMETIC_OPERATOR':
-                          case 'BINARY_OPERATOR':
-                          case 'COMPARISON_OPERATOR':
-                          case 'STATEMENT_SEPARATOR':
-                          case 'STEP':
-                          case 'ON':
-                          case 'FOR_LOOP_TO':
-                          case 'FOR_LOOP_IN':
-                              WSBefore = " ";
-                              WSAfter = " ";
-                              break;
-                          case 'BYREF':
-                          case 'BYVAL':
-                          case 'CALL':
-                          case 'CONST':
-                          case 'DEFAULT':
-                          case 'COMMA':
-                          case 'DIM':
-                          case 'ERASE':
-                          case 'IF_ELSE_ONE_LINE':
-                          case 'IF_ONE_LINE':
-                          case 'NEW_OPERATOR':
-                          case 'OPTION':
-                          case 'PRESERVE':
-                          case 'PRIVATE':
-                          case 'PUBLIC':
-                          case 'REDIM':
-                          case 'RESUME':
-                          case 'ERROR':
-                          case 'SET_OPERATOR':
-                              WSAfter = " ";
-                              break;
-                          case 'THEN':
-                              break;
-                          case 'STATEMENT_CONTINUATION':
-                              WSBefore = " ";
-                              WSAfter = " ";
-                              break;
-                          case 'WITH':
-                          case 'FUNCTION':
-                          case 'PROPERTY':
-                          case 'SUB':
-                          case 'CLASS':
-                          case 'IF':
-                              indent = 1;
-                              WSAfter = " ";
-                              lineIndent = -1;
-                              break;
-                          case 'END_SUB':
-                          case 'END_WITH':
-                          case 'END_FUNCTION':
-                          case 'END_CLASS':
-                          case 'END_IF':
-                          case 'END_PROPERTY':
-                              indent = -1;
-                              break;
-                          case 'SELECT_CASE':
-                              WSAfter = " ";
-                              //we increment twice so that when each case statement coments we
-                              //just decrease the indent by 1 using
-                              indent = 2;
-                              lineIndent = -2;
-                              break;
-                          case 'CASE':
-                          case 'CASE_ELSE':
-                              lineIndent = -1;
-                              WSAfter = "";
-                              break;
-                          case 'END_SELECT':
-                              indent = -2;
-                              break;
-                          case 'ELSE_IF':
-                              WSAfter = " ";
-                              lineIndent = -1;
-                              break;
-                          case 'ELSE':
-                              lineIndent = -1;
-                              break;
-                          case 'FOR_LOOP':
-                          case 'FOR_EACHLOOP':
-                          case 'WHILE_LOOP':
-                          case 'DO_LOOP':
-                          case 'DO_LOOP_START_UNTIL':
-                          case 'DO_LOOP_START_WHILE':
-                              WSAfter = " ";
-                              indent = 1;
-                              lineIndent = -1;
-                              break;                              
-                          case 'DO_LOOP':
-                              WSAfter = "";
-                              indent = 1;
-                              lineIndent = -1;
-                              break;
-                          case 'FOR_LOOP_NEXT':
-                          case 'DO_LOOP_END':
-                          case 'WHILE_LOOP_WEND':
-                              indent = -1;
-                              WSAfter = "";
-                              break;                              
-                          case 'DO_LOOP_END_UNTIL':
-                          case 'DO_LOOP_END_WHILE':
-                              indent = -1;
-                              WSAfter = " ";
-                              break;
+                            case 'ARTHMETIC_OPERATOR':
+                            case 'BINARY_OPERATOR':
+                            case 'COMPARISON_OPERATOR':
+                            case 'STATEMENT_SEPARATOR':
+                            case 'STEP':
+                            case 'ON':
+                            case 'FOR_LOOP_TO':
+                            case 'FOR_LOOP_IN':
+                                WSBefore = " ";
+                                WSAfter = " ";
+                                break;
+                            case 'BYREF':
+                            case 'BYVAL':
+                            case 'CALL':
+                            case 'CONST':
+                            case 'DEFAULT':
+                            case 'COMMA':
+                            case 'DIM':
+                            case 'ERASE':
+                            case 'IF_ELSE_ONE_LINE':
+                            case 'IF_ONE_LINE':
+                            case 'NEW_OPERATOR':
+                            case 'OPTION':
+                            case 'PRESERVE':
+                            case 'PRIVATE':
+                            case 'PUBLIC':
+                            case 'REDIM':
+                            case 'RESUME':
+                            case 'ERROR':
+                            case 'SET_OPERATOR':
+                                WSAfter = " ";
+                                break;
+                            case 'THEN':
+                                break;
+                            case 'STATEMENT_CONTINUATION':
+                                WSBefore = " ";
+                                WSAfter = " ";
+                                break;
+                            case 'WITH':
+                            case 'FUNCTION':
+                            case 'PROPERTY':
+                            case 'SUB':
+                            case 'CLASS':
+                            case 'IF':
+                                indent = 1;
+                                WSAfter = " ";
+                                lineIndent = -1;
+                                break;
+                            case 'END_SUB':
+                            case 'END_WITH':
+                            case 'END_FUNCTION':
+                            case 'END_CLASS':
+                            case 'END_IF':
+                            case 'END_PROPERTY':
+                                indent = -1;
+                                break;
+                            case 'SELECT_CASE':
+                                WSAfter = " ";
+                                //we increment twice so that when each case statement coments we
+                                //just decrease the indent by 1 using
+                                indent = 2;
+                                lineIndent = -2;
+                                break;
+                            case 'CASE':
+                            case 'CASE_ELSE':
+                                lineIndent = -1;
+                                WSAfter = "";
+                                break;
+                            case 'END_SELECT':
+                                indent = -2;
+                                break;
+                            case 'ELSE_IF':
+                                WSAfter = " ";
+                                lineIndent = -1;
+                                break;
+                            case 'ELSE':
+                                lineIndent = -1;
+                                break;
+                            case 'FOR_LOOP':
+                            case 'FOR_EACHLOOP':
+                            case 'WHILE_LOOP':
+                            case 'DO_LOOP':
+                            case 'DO_LOOP_START_UNTIL':
+                            case 'DO_LOOP_START_WHILE':
+                                WSAfter = " ";
+                                indent = 1;
+                                lineIndent = -1;
+                                break;
+                            case 'DO_LOOP':
+                                WSAfter = "";
+                                indent = 1;
+                                lineIndent = -1;
+                                break;
+                            case 'FOR_LOOP_NEXT':
+                            case 'DO_LOOP_END':
+                            case 'WHILE_LOOP_WEND':
+                                indent = -1;
+                                WSAfter = "";
+                                break;
+                            case 'DO_LOOP_END_UNTIL':
+                            case 'DO_LOOP_END_WHILE':
+                                indent = -1;
+                                WSAfter = " ";
+                                break;
                         }
 
                         return {
@@ -221,8 +221,8 @@ var vbsbeautifier = function vbsbeautifier_(options) {
 
                     // make sure that multiple BINARY_OPERATOR in chain
                     // will not create double spaces
-                    if(curTokenWSAfter === ' ' && nextTokenWSBefore === ' '){
-                      curTokenWSAfter = ''
+                    if (curTokenWSAfter === ' ' && nextTokenWSBefore === ' ') {
+                        curTokenWSAfter = ''
                     }
                 }
 
@@ -235,8 +235,8 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                         if (lastTokenType !== null && lastNonWSLNParsedToken === 'NEWLINE') {
                             bUseIndent = true;
                             writeCode(indent(curLineIndent) + options.breakLineChar);
-                        } else if(nextTokenType !== 'EOF'){
-                          writeCode(options.breakLineChar);
+                        } else if (nextTokenType !== 'EOF') {
+                            writeCode(options.breakLineChar);
                         }
 
                         bUseIndent = true;
@@ -248,7 +248,7 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                             dynamicIndent = options.indentChar;
                             //indentTabs[length];
                             bNextLineInContinuation = false;
-                        } else{
+                        } else {
                             dynamicIndent = '';
                         }
                         break;
@@ -256,8 +256,8 @@ var vbsbeautifier = function vbsbeautifier_(options) {
 
                 currentLevel += curIndentDelta;
 
-                if (curTokenType === 'ELSE' && nextTokenType === 'IF'){
-                  curTokenWSAfter = options.breakLineChar;
+                if (curTokenType === 'ELSE' && nextTokenType === 'IF') {
+                    curTokenWSAfter = options.breakLineChar;
                 }
 
                 if (isOperator(curTokenType) &&
@@ -265,8 +265,8 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                     /*curTokenWSAfter = "";
                     curTokenWSBefore = "";*/
 
-                    if (curTokenType === 'BINARY_OPERATOR' && curToken === "Not"){
-                      curTokenWSAfter = " ";
+                    if (curTokenType === 'BINARY_OPERATOR' && curToken === "Not") {
+                        curTokenWSAfter = " ";
                     }
                 }
 
