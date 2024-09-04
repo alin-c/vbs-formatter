@@ -1,6 +1,5 @@
 var vbsparser = function vbsparser_(options) {
-    var
-        tokens = [],
+    var tokens = [],
         tokenTypes = [],
         tokenTable = {
             "step": { "label": "Step", "type": "STEP" },
@@ -92,6 +91,7 @@ var vbsparser = function vbsparser_(options) {
             "datevalue": { "label": "DateValue", "type": "VBSCRIPT_FUNCTION" },
             "day": { "label": "Day", "type": "VBSCRIPT_FUNCTION" },
             "derived math": { "label": "Derived Math", "type": "VBSCRIPT_FUNCTION" },
+            "echo": { "label": "Echo", "type": "VBSCRIPT_FUNCTION" },
             "escape": { "label": "Escape", "type": "VBSCRIPT_FUNCTION" },
             "eval": { "label": "Eval", "type": "VBSCRIPT_FUNCTION" },
             "exp": { "label": "Exp", "type": "VBSCRIPT_FUNCTION" },
@@ -233,6 +233,7 @@ var vbsparser = function vbsparser_(options) {
             "vbmagenta": { "label": "vbMagenta", "type": "VBSCRIPT_CONSTANT_COLOR" },
             "vbcyan": { "label": "vbCyan", "type": "VBSCRIPT_CONSTANT_COLOR" },
             "vbwhite": { "label": "vbWhite", "type": "VBSCRIPT_CONSTANT_COLOR" },
+            "wscript": { "label": "WScript", "type": "VBSCRIPT_FUNCTION" },
         },
         source = options.source || '',
         lastParsedToken = '',
@@ -244,12 +245,9 @@ var vbsparser = function vbsparser_(options) {
             if (tokenType === 'WHITESPACE' || tokenType === 'NEWLINE')
                 lastNonWSParsedToken = tokenType;
         };
-
-
-    //Lexical Analysis
+    // lexical analysis
     (function vbsparser_tokenizer() {
-        var
-            index = 0,
+        var index = 0,
             bLength = source.length,
             buffer = options.source.split(''),
             n = 0,
@@ -307,12 +305,13 @@ var vbsparser = function vbsparser_(options) {
                 var n = 0,
                     str = '',
                     peeked;
-
                 while ((peeked = charAt(index + n)) !== -1 && !(isEOLorEOF(peeked)) &&
                     fn(peeked, buffer, index)) {
                     n++;
                 }
-                if (n === 0) return '';
+                if (n === 0) {
+                    return '';
+                }
                 str = read(n);
                 return str;
             },
@@ -342,7 +341,6 @@ var vbsparser = function vbsparser_(options) {
                 var n = 1,
                     str = '',
                     peeked;
-
                 while ((peeked = charAt(index + n)) !== -1 && !(isEOLorEOF(peeked))) {
                     if (peeked !== '\"') {
                         str += peeked;
@@ -354,7 +352,9 @@ var vbsparser = function vbsparser_(options) {
                     }
                     n++;
                 }
-                if (n === 0) return '';
+                if (n === 0) {
+                    return '';
+                }
                 str = read(n);
                 return str;
             },
@@ -370,18 +370,18 @@ var vbsparser = function vbsparser_(options) {
             },
             readNumber = function vbsparser_tokenizer_readNumber() {
                 var str = '';
-
                 str += readTill(function (chr) {
                     return isDigit(chr);
                 });
-
-                if (currentChar() === '.') str += read();
-
-                if (str.length === 0) return '';
+                if (currentChar() === '.') {
+                    str += read();
+                }
+                if (str.length === 0) {
+                    return '';
+                }
                 str += readTill(function (chr) {
                     return isDigit(chr);
                 });
-
                 if (currentChar() === 'e' || currentChar() === 'E') {
                     str += read();
                     if (currentChar() === '+' || currentChar() === '-') str += read();
@@ -391,26 +391,13 @@ var vbsparser = function vbsparser_(options) {
                 }
                 return str;
             };
-
-        var
-            curChar,
+        var curChar,
             nextChr,
             ch,
             word;
-
         while ((ch = currentChar()) !== -1) {
             word = '';
             switch (ch) {
-                /*case '~':
-                case ';':
-                case '?':
-                case '|':
-                case '`':
-                case '!':
-                case '{':
-                case '}':
-                    pushToken(ch, UNKNOWN);
-                    break;*/
                 case '\t':
                 case '\v':
                 case ' ':
@@ -427,7 +414,6 @@ var vbsparser = function vbsparser_(options) {
                     pushToken(readString(), 'STRING');
                     break;
                 case '\'':
-
                     pushToken(readLine(), 'COMMENT');
                     break;
                 case '#':
@@ -467,7 +453,6 @@ var vbsparser = function vbsparser_(options) {
                     break;
                 case '<':
                     nextChr = nextChar();
-
                     if (nextChr === '>') {
                         pushToken(read(2), 'COMPARISON_OPERATOR');
                     } else if (nextChr === '=') {
@@ -475,36 +460,28 @@ var vbsparser = function vbsparser_(options) {
                     } else {
                         pushToken(read(), 'COMPARISON_OPERATOR');
                     }
-
                     break;
                 case '>':
                     nextChr = nextChar();
-
                     if (nextChr === '=') {
                         pushToken(read(2), 'COMPARISON_OPERATOR');
                     } else {
                         pushToken(read(), 'COMPARISON_OPERATOR');
                     }
-
                     break;
                 case '&':
                     nextChr = nextChar();
-
                     if (nextChr === 'H' || nextChr === 'h') {
-                        //this is a hexa decimal value
                         pushToken(read() + readAlphaNumeric(), 'HEXNUMBER');
                     } else {
                         pushToken(read(), 'ARTHMETIC_OPERATOR');
                     }
-
                     break;
                 case '.':
                     nextChr = nextChar();
-
                     if (isDigit(nextChr)) {
                         pushToken(readNumber(), 'NUMBER');
                     } else {
-                        //record dot operator
                         pushToken(read(), 'DOT_OPERATOR');
                     }
                     break;
@@ -514,7 +491,6 @@ var vbsparser = function vbsparser_(options) {
                     } else {
                         pushToken(read(), 'NEWLINE');
                     }
-
                     break;
                 case '\n':
                     pushToken(read(), 'NEWLINE');
@@ -535,21 +511,16 @@ var vbsparser = function vbsparser_(options) {
                     pushToken(read(), 'COMMA');
                     break;
                 default:
-
                     if (!isAlphaNumeric(ch)) {
                         pushToken(read(), 'INVALID');
                         continue;
                     }
-
                     word = readAlphaNumeric();
                     n = 0;
-
                     if (lastNonWSParsedToken !== 'DOT_OPERATOR' && tokenTable[word.toLowerCase()] !== undefined) {
-
                         switch (word.toLowerCase()) {
                             case 'do':
                                 nextWord = readNextWord().toLowerCase();
-
                                 if (nextWord === 'while') {
                                     read(n);
                                     pushToken('Do While', 'DO_LOOP_START_WHILE');
@@ -559,11 +530,9 @@ var vbsparser = function vbsparser_(options) {
                                 } else {
                                     pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
                                 }
-
                                 break;
                             case 'loop':
                                 nextWord = readNextWord().toLowerCase();
-
                                 if (nextWord === 'while') {
                                     read(n);
                                     pushToken('Loop While', 'DO_LOOP_END_WHILE');
@@ -573,26 +542,21 @@ var vbsparser = function vbsparser_(options) {
                                 } else {
                                     pushToken('Loop', 'DO_LOOP_END');
                                 }
-
                                 break;
                             case 'for':
                                 nextWord = readNextWord();
-
                                 if (nextWord.toLowerCase() === 'each') {
                                     read(n);
                                     pushToken('For Each', 'FOR_EACHLOOP');
                                 } else {
                                     pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
                                 }
-
                                 break;
                             case 'on':
                                 nextWord = readNextWord();
-
                                 if (nextWord.toLowerCase() === 'error') {
                                     nextWord1 = readNextWord().toLowerCase();
                                     nextWord2 = readNextWord().toLowerCase();
-
                                     if (nextWord1 === 'resume' && nextWord2 === 'next') {
                                         read(n);
                                         pushToken('On Error Resume Next',
@@ -604,38 +568,31 @@ var vbsparser = function vbsparser_(options) {
                                         pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
                                     }
                                 }
-
                                 break;
                             case 'case':
                                 nextWord = readNextWord();
-
                                 if (nextWord.toLowerCase() === 'else') {
                                     read(n);
                                     pushToken('Case Else', 'CASE_ELSE');
                                 } else {
                                     pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
                                 }
-
                                 break;
                             case 'select':
                                 nextWord = readNextWord();
-
                                 if (nextWord.toLowerCase() === 'case') {
                                     read(n);
                                     pushToken('Select Case', 'SELECT_CASE');
                                 } else {
                                     pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
                                 }
-
                                 break;
                             case 'end':
                                 nextWord = readNextWord();
-
                                 switch (nextWord.toLowerCase()) {
                                     case 'function':
                                         read(n);
                                         pushToken('End Function', 'END_FUNCTION');
-
                                         break;
                                     case 'class':
                                         read(n);
@@ -644,31 +601,25 @@ var vbsparser = function vbsparser_(options) {
                                     case 'sub':
                                         read(n);
                                         pushToken('End Sub', 'END_SUB');
-
                                         break;
                                     case 'property':
                                         read(n);
                                         pushToken('End Property', 'END_PROPERTY');
-
                                         break;
                                     case 'if':
                                         read(n);
                                         pushToken('End If', 'END_IF');
-
                                         break;
                                     case 'with':
                                         read(n);
                                         pushToken('End With', 'END_WITH');
-
                                         break;
                                     case 'select':
                                         read(n);
                                         pushToken('End Select', 'END_SELECT');
-
                                         break;
                                     default:
                                         pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
-
                                         break;
                                 }
                                 break;
@@ -679,73 +630,54 @@ var vbsparser = function vbsparser_(options) {
                                     case 'function':
                                         read(n);
                                         pushToken('Exit Function', 'EXIT_FUNCTION');
-
                                         break;
                                     case 'for':
                                         read(n);
                                         pushToken('Exit For', 'EXIT_FOR');
-
                                         break;
                                     case 'do':
                                         read(n);
                                         pushToken('Exit Do', 'EXIT_DO');
-
                                         break;
                                     case 'property':
                                         read(n);
                                         pushToken('Exit Property', 'EXIT_PROPERTY');
-
                                         break;
                                     case 'sub':
                                         read(n);
                                         pushToken('Exit Sub', 'EXIT_SUB');
-
                                         break;
                                     default:
                                         pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
                                         break;
                                 }
-
                                 break;
                             default:
                                 pushToken(tokenTable[word.toLowerCase()].label, tokenTable[word.toLowerCase()].type);
                                 break;
                         }
                     } else {
-                        /*switch (word.toUpperCase()) {
-                                        case 'REM':
-                                            pushToken(word + readLine(), 'COMMENT');
-                                            break;
-                                        default:*/
                         pushToken(word, 'UNKNOWN');
-                        /*break;
-                                    }*/
                     }
-
                     break;
             }
         }
-
         pushToken(null, 'EOF');
     })();
-    //Syntatic Analysis
+    // syntactic analysis
     (function vbsparser_analizer() {
-        var
-            i = 0,
+        var i = 0,
             lTokens = tokens.length,
             n = 0,
             curToken = null,
             curTokenType = null,
             nextToken = null,
             skipToToken = function vbsparser_analizer_skipToToken(tokenType) {
-
                 while (n < lTokens && tokenTypes[++n] !== tokenType);
             },
             skipToEndOfStatement = function vbsparser_analizer_skipToEndOfStatement(fn) {
-                var
-                    bIgnoreNewLine = false,
+                var bIgnoreNewLine = false,
                     tokenType = null;
-
                 while (n < lTokens) {
                     tokenType = tokenTypes[++n];
                     switch (tokenType) {
@@ -769,30 +701,22 @@ var vbsparser = function vbsparser_(options) {
                     }
                 }
             };
-
         for (i = 0; i < lTokens - 1; i++) {
-
             curToken = tokens[i];
             curTokenType = tokenTypes[i];
-
             n = i + 1;
-
             while (n < lTokens && tokenTypes[n] === 'WHITESPACE') {
                 n++;
             }
-
             if (n < lTokens) {
                 nextToken = tokens[n];
             }
-
             n = i;
-
             switch (curTokenType) {
                 case 'IF':
                     skipToToken('THEN')
                     while (tokenTypes[++n] !== 'NEWLINE') {
-                        if (!(tokenTypes[n] === 'WHITESPACE' || tokenTypes[n] ===
-                            'COMMENT')) {
+                        if (!(tokenTypes[n] === 'WHITESPACE' || tokenTypes[n] === 'COMMENT')) {
                             tokenTypes[i] = 'IF_ELSE_ONE_LINE';
                             break;
                         }
@@ -804,13 +728,10 @@ var vbsparser = function vbsparser_(options) {
                             tokenTypes[n] = 'VARIABLE_NAME';
                         }
                     });
-
                     break;
                 case 'CLASS':
                     skipToToken('UNKNOWN');
-
                     tokenTypes[n] = 'CLASS_NAME';
-
                     break;
                 case 'REDIM':
                     skipToEndOfStatement(function (t) {
@@ -818,7 +739,6 @@ var vbsparser = function vbsparser_(options) {
                             tokenTypes[n] = 'VARIABLE_NAME';
                         }
                     });
-
                     break;
                 case 'CONST':
                     skipToEndOfStatement(function (t) {
@@ -826,24 +746,19 @@ var vbsparser = function vbsparser_(options) {
                             tokenTypes[n] = 'CONST_VARIABLE_NAME';
                         }
                     });
-
                     break;
                 default:
                     break;
             }
-
             lastTokenType = tokenTypes[i];
-
             if (lastTokenType !== 'WHITESPACE' && lastTokenType !== 'NEWLINE') {
                 lastNonWSParsedToken = lastTokenType;
             }
-
             if (lastNonWSParsedToken != 'WHITESPACE') {
                 lastNonWSLNParsedToken = lastTokenType;
             }
         }
     })();
-
     return {
         tokens: tokens,
         tokenTypes: tokenTypes

@@ -3,9 +3,9 @@
     "displayName": "VBS Formatter",
     "description": "Format VBScript and VBA files.",
     "publisher": "alin-c",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "engines": {
-        "vscode": "^1.85.0"
+        "vscode": "^1.90.0"
     },
     "categories": [
         "Other",
@@ -71,9 +71,9 @@
         "test": "vscode-test"
     },
     "devDependencies": {
-        "@types/vscode": "^1.85.0",
+        "@types/vscode": "^1.90.0",
         "@types/mocha": "^10.0.6",
-        "@types/node": "18.x",
+        "@types/node": "22.x",
         "eslint": "^8.54.0",
         "typescript": "^5.3.2",
         "@vscode/test-cli": "^0.0.4",
