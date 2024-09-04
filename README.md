@@ -12,15 +12,20 @@ This fork was primarily intended to allow using the indent character and size co
 Formats VBS and VBA code. It uses global indentation settings (tab or space, indent size).
 
 ## Requirements
-VS Code v.1.85.0
+VS Code v.1.90.0
 
 ## Extension Settings
 None
 
 ## Known Issues
-None at this time.
+- in a For... Next loop, any method incidentally named Next (ex. of a cursor) breaks the formatting after it (probably, does the same for other keywords which appear as method names)
 
 ## Release Notes
 
+### 0.0.2
+- fix activation to cover code autodetected as vba
+- minor code improvements
+
 ### 0.0.1
-Initial release
+- initial release
+

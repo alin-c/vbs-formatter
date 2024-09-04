@@ -5,7 +5,6 @@ const {
     Position,
     Range,
 } = require('vscode');
-
 const editorConfig = vscode.workspace.getConfiguration('editor');
 const insertSpaces = editorConfig.get('insertSpaces');
 const tabSize = editorConfig.get('tabSize');
@@ -15,7 +14,6 @@ if (insertSpaces) {
 } else {
     indentCharValue = '\t';
 }
-
 const contributions = vscode.workspace.getConfiguration('vbaFormatter');
 const breakLineCharValue = '\n';
 const levelValue = contributions.get('level');
@@ -24,28 +22,21 @@ const removeCommentsValue = contributions.get('removeComments');
 const editor = vscode.window.activeTextEditor;
 
 function activate(context) {
-    // vscode.window.showInformationMessage('VBA Beautifier is now active!');
-
     let buttonActivation = vscode.commands.registerTextEditorCommand('extension.pretty', (editor) => {
-        let document = editor.document
-        prepareDocument(document)
+        let document = editor.document;
+        prepareDocument(document);
     });
-
     context.subscriptions.push(buttonActivation);
-
     let formatFunction = vscode.languages.registerDocumentFormattingEditProvider('vbs', {
         provideDocumentFormattingEdits: (document) => {
-            prepareDocument(document)
+            prepareDocument(document);
         }
     });
-
     context.subscriptions.push(formatFunction);
 }
 
 function prepareDocument(document) {
-
-    if (editor && editor.document.languageId === 'vbs' || editor.document.languageId === 'vb') {
-
+    if (document.languageId === 'vbs' || document.languageId === 'vb' || document.languageId === 'vba') {
         var inFile = document.fileName;
         const documentText = document.getText();
         const fileExtension = getFileExtension(inFile);
@@ -53,9 +44,6 @@ function prepareDocument(document) {
         const end = new Position(document.lineCount + 1, 0);
         const range = new Range(start, end);
         const sourceFile = document.getText(range);
-
-        // vscode.window.showInformationMessage('Beautifying');
-
         let outFile = vbspretty({
             level: levelValue,
             indentChar: indentCharValue,
@@ -68,22 +56,19 @@ function prepareDocument(document) {
         const edit = new vscode.WorkspaceEdit();
         edit.replace(document.uri, range, outFile);
         return vscode.workspace.applyEdit(edit)
-
     } else {
         vscode.window.showInformationMessage('Not a VBScript or VBA file!');
     }
 }
 
 function getStartLine(text, fileExtension) {
-
     if (fileExtension === '.cls') {
         const lineNumber = findLineNumber(text, 'Attribute VB_Exposed');
         return lineNumber;
     } else if (fileExtension === '.bas') {
         const lineNumber = findLineNumber(text, 'Attribute VB_Name');
         return lineNumber;
-    }
-    else {
+    } else {
         return 0;
     }
 }
@@ -97,7 +82,6 @@ function findLineNumber(text, searchText) {
 function getFileExtension(fileName) {
     return path.extname(fileName);
 }
-
 
 function deactivate() {
     vscode.window.showInformationMessage('deactivated');

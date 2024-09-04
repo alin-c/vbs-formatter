@@ -1,14 +1,9 @@
 var vbspretty = function vbspretty_(options) {
-
-
-    var
-        parse = require('./vbsparser.js'),
+    var parse = require('./vbsparser.js'),
         beautify = require('./vbsbeautifier.js');
-
     options = options || {};
     (function vbspretty_beautify() {
         var tparsed = parse(options);
-
         (function vbspretty_beautify_options() {
             options.tokens = tparsed.tokens || [];
             options.tokenTypes = tparsed.tokenTypes || [];
@@ -19,7 +14,6 @@ var vbspretty = function vbspretty_(options) {
             options.removeComments = options.removeComments === true || false;
         })();
     })();
-
     return beautify(options);
 };
 

@@ -1,16 +1,12 @@
 var vbsbeautifier = function vbsbeautifier_(options) {
-    var
-        tokens = options.tokens || [],
+    var tokens = options.tokens || [],
         tokenTypes = options.tokenTypes || [],
         source = options.source || '',
         output = '',
         lastParsedToken = '',
         lastNonWSParsedToken = '';
-
-    //beautify
     (function vbsbeautifier_beautify() {
-        var
-            i = 0,
+        var i = 0,
             lTokens = tokens.length,
             n = 0,
             curToken = null,
@@ -40,21 +36,20 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                 ].indexOf(tokenType) !== -1;
             },
             indent = function (level) {
-                if (!bUseIndent)
+                if (!bUseIndent) {
                     return '';
-
+                }
                 bUseIndent = false;
-                if (currentLevel + level < 0)
+                if (currentLevel + level < 0) {
                     return staticIndent + dynamicIndent;
-
+                }
                 return staticIndent + dynamicIndent + options.indentChar.repeat(currentLevel + level);
             },
             writeCode = function (code) {
                 output += code;
             },
             writeToken = function vbsbeautifier_beautify_writeToken() {
-                var
-                    curTokenWSAfter = '',
+                var curTokenWSAfter = '',
                     curTokenWSBefore = '',
                     nextTokenWSBefore = '',
                     nextTokenWSAfter = '',
@@ -63,12 +58,10 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                     nextIndentDelta = 0,
                     nextLineIndent = 0,
                     setTokenInpact = function (tokenType) {
-                        var
-                            indent = 0,
+                        var indent = 0,
                             WSBefore = "",
                             WSAfter = "",
                             lineIndent = 0;
-
                         switch (tokenType) {
                             case 'ARTHMETIC_OPERATOR':
                             case 'BINARY_OPERATOR':
@@ -128,8 +121,6 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                                 break;
                             case 'SELECT_CASE':
                                 WSAfter = " ";
-                                //we increment twice so that when each case statement coments we
-                                //just decrease the indent by 1 using
                                 indent = 2;
                                 lineIndent = -2;
                                 break;
@@ -175,7 +166,6 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                                 WSAfter = " ";
                                 break;
                         }
-
                         return {
                             indent: indent,
                             lineIndent: lineIndent,
@@ -183,26 +173,18 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                             WSAfter: WSAfter
                         };
                     };
-
                 var currentTokentInpact = setTokenInpact(curTokenType);
                 curIndentDelta = currentTokentInpact.indent;
                 curLineIndent = currentTokentInpact.lineIndent;
                 curTokenWSBefore = currentTokentInpact.WSBefore;
                 curTokenWSAfter = currentTokentInpact.WSAfter;
-
-                //if next token is new line then lets not add a space after the current token
                 curTokenWSAfter = nextTokenType === 'NEWLINE' ? '' : curTokenWSAfter;
-
                 if (curTokenType !== 'NEWLINE' && !ignoreWSToken(curTokenType)) {
-
                     var nextTokentInpact = setTokenInpact(nextTokenType);
-
                     nextIndentDelta = nextTokentInpact.indent;
                     nextLineIndent = nextTokentInpact.lineIndent;
                     nextTokenWSBefore = nextTokentInpact.WSBefore;
                     nextTokenWSAfter = nextTokentInpact.WSAfter;
-
-                    //Let's make sure we don't merge two different tokens because of spacing
                     if (curTokenWSAfter === '' && nextTokenWSBefore === '') {
                         switch (nextTokenType) {
                             case 'NEWLINE':
@@ -216,62 +198,42 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                                 curTokenWSAfter = ' ';
                                 break;
                         }
-
                     }
-
-                    // make sure that multiple BINARY_OPERATOR in chain
-                    // will not create double spaces
                     if (curTokenWSAfter === ' ' && nextTokenWSBefore === ' ') {
-                        curTokenWSAfter = ''
+                        curTokenWSAfter = '';
                     }
                 }
-
                 switch (curTokenType) {
                     case 'STATEMENT_CONTINUATION':
                         bNextLineInContinuation = true;
                         break;
                     case 'NEWLINE':
-
                         if (lastTokenType !== null && lastNonWSLNParsedToken === 'NEWLINE') {
                             bUseIndent = true;
                             writeCode(indent(curLineIndent) + options.breakLineChar);
                         } else if (nextTokenType !== 'EOF') {
                             writeCode(options.breakLineChar);
                         }
-
                         bUseIndent = true;
                         if (bNextLineInContinuation) {
-                            //we need to add some smart identation to make sure the continued line is extra indented
-                            //int length = lastLine.Trim().Length;
-                            //get tabe size
-                            //length = (int) (length / 4 * 0.4);
                             dynamicIndent = options.indentChar;
-                            //indentTabs[length];
                             bNextLineInContinuation = false;
                         } else {
                             dynamicIndent = '';
                         }
                         break;
                 }
-
                 currentLevel += curIndentDelta;
-
                 if (curTokenType === 'ELSE' && nextTokenType === 'IF') {
                     curTokenWSAfter = options.breakLineChar;
                 }
-
                 if (isOperator(curTokenType) &&
                     isOperator(lastNonWSParsedToken)) {
-                    /*curTokenWSAfter = "";
-                    curTokenWSBefore = "";*/
-
                     if (curTokenType === 'BINARY_OPERATOR' && curToken === "Not") {
                         curTokenWSAfter = " ";
                     }
                 }
-
                 if (options.removeComments && curTokenType === 'COMMENT') {
-                    //lets not do anything and remove this comment
                     if (nextTokenType === 'NEWLINE') {
                         tokens[n] = '';
                         tokenTypes[n] = 'UNKNOWN';
@@ -279,49 +241,34 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                 } else if ((curTokenType !== 'WHITESPACE' && curTokenType !== 'NEWLINE')) {
                     writeCode(indent(curLineIndent) + curTokenWSBefore + curToken + curTokenWSAfter);
                 }
-
                 if (curTokenType === 'ELSE' && nextTokenType === 'IF') {
-                    //if have a mistaken else if and not ElseIf. Need to make sure
-                    //we add a new line to it
                     bUseIndent = true;
                 }
             };
-
         for (i = 0; i < lTokens - 1; i++) {
-
             curToken = tokens[i];
             curTokenType = tokenTypes[i];
-
             n = i + 1;
-
             while (n < lTokens && tokenTypes[n] === 'WHITESPACE') {
                 n++;
             }
-
             if (n < lTokens) {
                 nextToken = tokens[n];
                 nextTokenType = tokenTypes[n];
             }
-
             n = i;
-
             if (curTokenType !== 'WHITESPACE') {
                 writeToken();
             }
-
             lastTokenType = tokenTypes[i];
-
             if (lastTokenType !== 'WHITESPACE' && lastTokenType !== 'NEWLINE') {
                 lastNonWSParsedToken = lastTokenType;
             }
-
             if (lastNonWSParsedToken !== 'WHITESPACE') {
                 lastNonWSLNParsedToken = lastTokenType;
             }
         }
-
     })();
-
     return output;
 };
 module.exports = vbsbeautifier;
