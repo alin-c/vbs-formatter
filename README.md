@@ -17,10 +17,9 @@ VS Code v.1.90.0
 ## Extension Settings
 None
 
-## Known Issues
-- in a For... Next loop, any method incidentally named Next (ex. of a cursor) breaks the formatting after it (probably, does the same for other keywords which appear as method names)
-
 ## Release Notes
+###0.0.3
+- fix the known issue of broken code when a method called Next (of a custom cursor) is called
 
 ### 0.0.2
 - fix activation to cover code autodetected as vba
@@ -28,4 +27,3 @@ None
 
 ### 0.0.1
 - initial release
-

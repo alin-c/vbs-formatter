@@ -2,6 +2,10 @@
 All notable changes will be documented in this file.
 
 ## [Released]
+0.0.3
+- fix the known issue of broken code when a method called Next (of a custom cursor) is called
+- handling for rem# special usage in custom software
+
 0.0.2
 - add WScript and Echo to the autoformatting list
 - activate the extension on VBA, too
