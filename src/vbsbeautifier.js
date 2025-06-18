@@ -233,7 +233,9 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                         curTokenWSAfter = " ";
                     }
                 }
-                if (options.removeComments && curTokenType === 'COMMENT') {
+                                if (curTokenType === 'COMMENT' && curToken.trimStart().toLowerCase().startsWith('rem#')) {
+                    writeCode(indent(curLineIndent) + curToken + curTokenWSAfter);
+                } else if (options.removeComments && curTokenType === 'COMMENT') {
                     if (nextTokenType === 'NEWLINE') {
                         tokens[n] = '';
                         tokenTypes[n] = 'UNKNOWN';
@@ -241,6 +243,7 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                 } else if ((curTokenType !== 'WHITESPACE' && curTokenType !== 'NEWLINE')) {
                     writeCode(indent(curLineIndent) + curTokenWSBefore + curToken + curTokenWSAfter);
                 }
+
                 if (curTokenType === 'ELSE' && nextTokenType === 'IF') {
                     bUseIndent = true;
                 }

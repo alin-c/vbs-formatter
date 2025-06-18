@@ -417,6 +417,13 @@ var vbsparser = function vbsparser_(options) {
                 case '\"':
                     pushToken(readString(), 'STRING');
                     break;
+                case 'r':
+                case 'R':
+                    var preview = buffer.slice(index, index + 4).join('').toLowerCase();
+                    if (preview === 'rem#') {
+                        pushToken(readLine(), 'COMMENT');
+                        break;
+                    }
                 case '\'':
                     pushToken(readLine(), 'COMMENT');
                     break;
@@ -521,7 +528,7 @@ var vbsparser = function vbsparser_(options) {
                     }
                     word = readAlphaNumeric();
                     n = 0;
-                    if (lastNonWSParsedToken !== 'DOT_OPERATOR' && tokenTable[word.toLowerCase()] !== undefined) {
+                    if (lastNonWSParsedToken !== 'DOT_OPERATOR' && tokenTable[word.toLowerCase()] !== undefined && !(tokens.length > 0 && tokens[tokens.length - 1] === '.')) {
                         switch (word.toLowerCase()) {
                             case 'do':
                                 nextWord = readNextWord().toLowerCase();
