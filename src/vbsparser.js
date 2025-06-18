@@ -257,11 +257,15 @@ var vbsparser = function vbsparser_(options) {
             },
             isEOLorEOF = function vbsparser_tokenizer_isEOLorEOF(char) {
                 char = char || buffer[index];
-                if (char === -1) return true;
+                if (char === -1) {
+                    return true;
+                }
                 if (char === '\r' && nextChar() === '\n') {
                     return true;
                 }
-                if (char === '\n') return true;
+                if (char === '\n') {
+                    return true;
+                }
                 return false;
             },
             isAlphaNumeric = function vbsparser_tokenizer_isAlphaNumeric(char) {
@@ -625,7 +629,6 @@ var vbsparser = function vbsparser_(options) {
                                 break;
                             case 'exit':
                                 nextWord = readNextWord();
-
                                 switch (nextWord.toLowerCase()) {
                                     case 'function':
                                         read(n);
@@ -682,7 +685,9 @@ var vbsparser = function vbsparser_(options) {
                     tokenType = tokenTypes[++n];
                     switch (tokenType) {
                         case 'STATEMENT_SEPARATOR':
-                            if (options.breakOnSeparator) return;
+                            if (options.breakOnSeparator) {
+                                return;
+                            }
                             break;
                         case 'NEWLINE':
                             if (bIgnoreNewLine) {
