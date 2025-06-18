@@ -3,7 +3,7 @@
     "displayName": "VBS Formatter",
     "description": "Format VBScript and VBA files.",
     "publisher": "alin-c",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "engines": {
         "vscode": "^1.90.0"
     },

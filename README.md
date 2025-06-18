@@ -18,7 +18,10 @@ VS Code v.1.90.0
 None
 
 ## Release Notes
-###0.0.3
+### 0.0.4
+- minor metadata changes
+
+### 0.0.3
 - fix the known issue of broken code when a method called Next (of a custom cursor) is called
 
 ### 0.0.2
