@@ -2,6 +2,9 @@
 All notable changes will be documented in this file.
 
 ## [Released]
+0.0.5
+- fixed an issue related to the handling of Rem and Rem# tokens
+
 0.0.4
 - minor metadata changes
 

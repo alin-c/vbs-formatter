@@ -18,6 +18,9 @@ VS Code v.1.90.0
 None
 
 ## Release Notes
+### 0.0.5
+- fixed an issue related to the handling of Rem and Rem# tokens
+
 ### 0.0.4
 - minor metadata changes
 

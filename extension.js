@@ -8,11 +8,9 @@ const {
 const editorConfig = vscode.workspace.getConfiguration('editor');
 const insertSpaces = editorConfig.get('insertSpaces');
 const tabSize = editorConfig.get('tabSize');
-let indentCharValue;
+let indentCharValue = '\t';
 if (insertSpaces) {
     indentCharValue = ' '.repeat(tabSize);
-} else {
-    indentCharValue = '\t';
 }
 const contributions = vscode.workspace.getConfiguration('vbaFormatter');
 const breakLineCharValue = '\n';
@@ -52,7 +50,6 @@ function prepareDocument(document) {
             removeComments: removeCommentsValue,
             source: sourceFile,
         });
-        console.log(outFile);
         const edit = new vscode.WorkspaceEdit();
         edit.replace(document.uri, range, outFile);
         return vscode.workspace.applyEdit(edit)

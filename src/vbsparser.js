@@ -131,6 +131,7 @@ var vbsparser = function vbsparser_(options) {
             "msgbox": { "label": "MsgBox", "type": "VBSCRIPT_FUNCTION" },
             "now": { "label": "Now", "type": "VBSCRIPT_FUNCTION" },
             "oct": { "label": "Oct", "type": "VBSCRIPT_FUNCTION" },
+            "rem": { "label": "Rem", "type": "COMMENT" },
             "replace": { "label": "Replace", "type": "VBSCRIPT_FUNCTION" },
             "rgb": { "label": "RGB", "type": "VBSCRIPT_FUNCTION" },
             "right": { "label": "Right", "type": "VBSCRIPT_FUNCTION" },
@@ -242,8 +243,9 @@ var vbsparser = function vbsparser_(options) {
             tokens.push(token);
             tokenTypes.push(tokenType);
             lastParsedToken = tokenType;
-            if (tokenType === 'WHITESPACE' || tokenType === 'NEWLINE')
+            if (tokenType === 'WHITESPACE' || tokenType === 'NEWLINE') {
                 lastNonWSParsedToken = tokenType;
+            }
         };
     // lexical analysis
     (function vbsparser_tokenizer() {
@@ -273,6 +275,23 @@ var vbsparser = function vbsparser_(options) {
             },
             isDigit = function vbsparser_tokenizer_isDigit(char) {
                 return /[0-9]/.test(char);
+            },
+            isInCommentContext = function vbsparser_tokenizer_isInCommentContext(char, pos) {
+                let lineStart = pos;
+                while (lineStart > 0 && buffer[lineStart - 1] !== '\n') {
+                    lineStart--;
+                }
+                let lineEnd = buffer.indexOf('\n', lineStart);
+                if (lineEnd === -1) {
+                    lineEnd = buffer.length;
+                }
+                const line = buffer.slice(lineStart, lineEnd).join('');
+                const lowerLine = line.toLowerCase();
+                const relCharPos = pos - lineStart;
+                const remPos = lowerLine.indexOf('rem');
+                const quotePos = lowerLine.indexOf("'");
+                return (remPos !== -1 && remPos < relCharPos) ||
+                    (quotePos !== -1 && quotePos < relCharPos);
             },
             read = function vbsparser_tokenizer_read(length) {
                 var str = '';
@@ -402,6 +421,18 @@ var vbsparser = function vbsparser_(options) {
         while ((ch = currentChar()) !== -1) {
             word = '';
             switch (ch) {
+                case '#':
+                    if (isInCommentContext(ch, index)) {
+                        pushToken(readLine(), 'COMMENT');
+                        break;
+                    }
+                    read();
+                    word = '#' + readTill(function (char) {
+                        return char !== '#';
+                    }) + '#';
+                    read();
+                    pushToken(word, 'DATE');
+                    break;
                 case '\t':
                 case '\v':
                 case ' ':
@@ -417,23 +448,8 @@ var vbsparser = function vbsparser_(options) {
                 case '\"':
                     pushToken(readString(), 'STRING');
                     break;
-                case 'r':
-                case 'R':
-                    var preview = buffer.slice(index, index + 4).join('').toLowerCase();
-                    if (preview === 'rem#') {
-                        pushToken(readLine(), 'COMMENT');
-                        break;
-                    }
                 case '\'':
                     pushToken(readLine(), 'COMMENT');
-                    break;
-                case '#':
-                    read();
-                    word = '#' + readTill(function (char) {
-                        return char !== '#';
-                    }) + '#';
-                    read();
-                    pushToken(word, 'DATE');
                     break;
                 case '[':
                     word = readTill(function (char) {

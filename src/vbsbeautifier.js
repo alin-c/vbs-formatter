@@ -233,7 +233,7 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                         curTokenWSAfter = " ";
                     }
                 }
-                                if (curTokenType === 'COMMENT' && curToken.trimStart().toLowerCase().startsWith('rem#')) {
+                if (curTokenType === 'COMMENT' && curToken.trimStart().toLowerCase().startsWith('rem#')) {
                     writeCode(indent(curLineIndent) + curToken + curTokenWSAfter);
                 } else if (options.removeComments && curTokenType === 'COMMENT') {
                     if (nextTokenType === 'NEWLINE') {
@@ -243,7 +243,6 @@ var vbsbeautifier = function vbsbeautifier_(options) {
                 } else if ((curTokenType !== 'WHITESPACE' && curTokenType !== 'NEWLINE')) {
                     writeCode(indent(curLineIndent) + curTokenWSBefore + curToken + curTokenWSAfter);
                 }
-
                 if (curTokenType === 'ELSE' && nextTokenType === 'IF') {
                     bUseIndent = true;
                 }
@@ -272,6 +271,8 @@ var vbsbeautifier = function vbsbeautifier_(options) {
             }
         }
     })();
+    // handle a custom, non-standard, Rem# directive
+    output = output.replace(/^rem\s#\s/gim, 'Rem# ');
     return output;
 };
 module.exports = vbsbeautifier;
