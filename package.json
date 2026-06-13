@@ -3,7 +3,7 @@
     "displayName": "VBS Formatter",
     "description": "Format VBScript and VBA files.",
     "publisher": "alin-c",
-    "version": "0.0.5",
+    "version": "0.1.0",
     "engines": {
         "vscode": "^1.90.0"
     },
@@ -16,7 +16,6 @@
     "activationEvents": [
         "onLanguage:vbs",
         "onLanguage:vba",
-        "onLanguage:VBScript",
         "onLanguage:vb"
     ],
     "main": "./extension.js",
@@ -40,29 +39,6 @@
                     "description": "Remove comments from the input"
                 }
             }
-        },
-        "commands": [
-            {
-                "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
-                "command": "extension.pretty",
-                "title": "VBS Formatter"
-            }
-        ],
-        "keybindings": [
-            {
-                "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
-                "command": "extension.pretty",
-                "key": "shift+alt+f"
-            }
-        ],
-        "menus": {
-            "editor/context": [
-                {
-                    "when": "!editorReadonly && resourceExtname =~ /\\.bas$|\\.cls$|\\.vbs$|\\.vb$|\\.frm$/",
-                    "command": "extension.pretty",
-                    "group": "navigation"
-                }
-            ]
         }
     },
     "scripts": {

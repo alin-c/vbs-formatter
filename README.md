@@ -18,6 +18,13 @@ VS Code v.1.90.0
 None
 
 ## Release Notes
+### 0.1.0
+#### Fixed document formatting provider integration - enables Format Document, Editor: Format on Save, etc.
+- Return TextEdit formatting results to VS Code instead of applying workspace edits manually
+- Removed the custom formatter command, keybinding, and context menu contribution in favor of VS Code's built-in formatting workflow
+- Set indent character according to the current, active editor's formatting options
+- Changes to extension settings apply without reloading the extension
+
 ### 0.0.5
 - fixed an issue related to the handling of Rem and Rem# tokens
 
